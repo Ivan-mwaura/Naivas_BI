@@ -12,7 +12,43 @@ import seaborn as s
 
 
 #Data Cleaning  - Cecilia
+# Load the dataset
+# (Ensure that 'OnlineRetail.csv' is in your working directory)
+df = pd.read_csv('/content/OnlineRetail.csv', encoding='latin1')
 
+# Display the first few rows
+print("First five rows of the dataset:")
+print(df.head())
+
+# Basic info and summary statistics
+print("\nDataset Info:")
+df.info()
+
+print("\nSummary Statistics:")
+print(df.describe())
+
+#Data Cleaning
+print("Null values in each column:")
+print(df.isnull().sum())
+
+# Handle missing values in CustomerID and Description
+df = df.dropna(subset=['CustomerID', 'Description'])
+
+# Convert CustomerID to string (if not already)
+df['CustomerID'] = df['CustomerID'].astype(str)
+
+# Remove negative or zero quantities (likely returns or errors)
+df = df[df['Quantity'] > 0]
+
+# Create a TotalPrice column
+df['TotalPrice'] = df['Quantity'] * df['UnitPrice']
+
+# Convert InvoiceDate to datetime format
+df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
+
+# Check the cleaning result
+print("\nCleaned Data Sample:")
+print(df.head())
 
 
 
