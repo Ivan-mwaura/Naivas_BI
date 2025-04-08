@@ -26,10 +26,48 @@ import seaborn as s
 
 
 #Data Preparation for analysis/ Classification - Jane and Nicolas
+#Jane
+
+# Set analysis date as the last invoice date in the dataset plus one day
+analysis_date = df['InvoiceDate'].max() + pd.Timedelta(days=1)
+print("Analysis Date:", analysis_date)
+
+# Aggregate data for each customer to create the RFM table
+rfm = df.groupby('CustomerID').agg({
+    'InvoiceDate': lambda x: (analysis_date - x.max()).days,  # Recency
+    'InvoiceNo': 'nunique',                                  # Frequency
+    'TotalPrice': 'sum'                                      # Monetary
+}).reset_index()
+
+# Rename columns for clarity
+rfm.columns = ['CustomerID', 'Recency', 'Frequency', 'Monetary']
+
+# Define churn: customers with recency greater than 180 days (6 months)
+rfm['Churn'] = np.where(rfm['Recency'] > 180, 1, 0)
+
+print("\nRFM Table Sample:")
+print(rfm.head())
+
+# Visualize the distribution of RFM metrics
+plt.figure(figsize=(15, 4))
+
+plt.subplot(1, 3, 1)
+sns.histplot(rfm['Recency'], kde=True)
+plt.title('Recency Distribution')
+
+plt.subplot(1, 3, 2)
+sns.histplot(rfm['Frequency'], kde=True)
+plt.title('Frequency Distribution')
+
+plt.subplot(1, 3, 3)
+sns.histplot(rfm['Monetary'], kde=True)
+plt.title('Monetary Distribution')
+
+plt.tight_layout()
+plt.show()
 
 
-
-
+#Nicholas
 
 
 
