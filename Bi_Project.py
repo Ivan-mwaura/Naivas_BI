@@ -61,7 +61,24 @@ import seaborn as s
 #Association Rule Mining - Evans and Sandra
 #sandra
 
+from mlxtend.frequent_patterns import apriori, association_rules
 
+# For basket analysis, we pivot the data such that rows represent invoices and columns represent items.
+# We will use the InvoiceNo and Description fields.
+
+# Create a basket: one-hot encoding of items per invoice
+basket = df.groupby(['InvoiceNo', 'Description'])['Quantity'].sum().unstack().reset_index().fillna(0).set_index('InvoiceNo')
+
+# Convert quantities to binary values (1 if item was bought, else 0)
+basket = basket.applymap(lambda x: 1 if x > 0 else 0)
+
+print("\nBasket Sample:")
+print(basket.head())
+
+# Generate frequent itemsets using the apriori algorithm
+frequent_itemsets = apriori(basket, min_support=0.02, use_colnames=True)
+print("\nFrequent Itemsets:")
+print(frequent_itemsets.head())
 
 #Evans
 # Generate association rules
