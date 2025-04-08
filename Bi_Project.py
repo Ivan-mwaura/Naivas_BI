@@ -68,6 +68,38 @@ plt.show()
 
 
 #Nicholas
+# Import machine learning libraries
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+
+# Features and target
+features = rfm[['Recency', 'Frequency', 'Monetary']]
+target = rfm['Churn']
+
+# Split into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.3, random_state=42)
+
+# Initialize and train the RandomForest classifier
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_classifier.fit(X_train, y_train)
+
+# Make predictions
+y_pred = rf_classifier.predict(X_test)
+
+# Evaluate the model
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+print("Accuracy Score:", accuracy_score(y_test, y_pred))
+
+# Visualize the confusion matrix
+conf_mat = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(6, 4))
+sns.heatmap(conf_mat, annot=True, fmt='d', cmap='Blues')
+plt.title("Confusion Matrix")
+plt.ylabel("Actual")
+plt.xlabel("Predicted")
+plt.show()
 
 
 
